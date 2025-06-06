@@ -17,21 +17,21 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Installing Node.js dependencies...'
-                sh 'npm ci'
+                bat 'npm ci'
             }
         }
         
         stage('Build Application') {
             steps {
                 echo 'Building the application...'
-                sh 'npm run build'
+                bat 'npm run build'
             }
         }
         
         stage('Run Tests') {
             steps {
                 echo 'Running tests...'
-                sh 'echo "No tests configured yet - this is a demo app"'
+                bat 'echo "No tests configured yet - this is a demo app"'
             }
         }
         
@@ -48,9 +48,9 @@ pipeline {
         stage('Test Docker Image') {
             steps {
                 echo 'Testing Docker image...'
-                sh """
+                bat """
                     docker run -d --name test-container -p 8080:80 ${DOCKER_IMAGE}
-                    sleep 10
+                    timeout /t 10 /nobreak
                     curl -f http://localhost:8080 || exit 1
                     docker stop test-container
                     docker rm test-container
@@ -61,9 +61,9 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to staging environment...'
-                sh """
-                    docker stop ${APP_NAME}-staging || true
-                    docker rm ${APP_NAME}-staging || true
+                bat """
+                    docker stop ${APP_NAME}-staging 2>nul || echo "Container not running"
+                    docker rm ${APP_NAME}-staging 2>nul || echo "Container not found"
                     docker run -d --name ${APP_NAME}-staging -p 3000:80 ${DOCKER_IMAGE}
                 """
             }
@@ -74,7 +74,7 @@ pipeline {
                 echo 'Performing health check...'
                 script {
                     sleep(time: 10, unit: 'SECONDS')
-                    sh 'curl -f http://localhost:3000 || exit 1'
+                    bat 'curl -f http://localhost:3000 || exit 1'
                 }
             }
         }
@@ -84,9 +84,9 @@ pipeline {
         always {
             echo 'Pipeline completed!'
             // Clean up test containers
-            sh """
-                docker stop test-container || true
-                docker rm test-container || true
+            bat """
+                docker stop test-container 2>nul || echo "Test container not running"
+                docker rm test-container 2>nul || echo "Test container not found"
             """
         }
         success {
@@ -96,9 +96,9 @@ pipeline {
         failure {
             echo 'Pipeline failed! 😞'
             // Clean up on failure
-            sh """
-                docker stop ${APP_NAME}-staging || true
-                docker rm ${APP_NAME}-staging || true
+            bat """
+                docker stop ${APP_NAME}-staging 2>nul || echo "Staging container not running"
+                docker rm ${APP_NAME}-staging 2>nul || echo "Staging container not found"
             """
         }
     }
