@@ -49,9 +49,9 @@ pipeline {
             steps {
                 echo 'Testing Docker image...'
                 bat """
-                    docker run -d --name test-container -p 8080:80 ${DOCKER_IMAGE}
+                    docker run -d --name test-container -p 8090:80 ${DOCKER_IMAGE}
                     timeout /t 10 /nobreak
-                    curl -f http://localhost:8080 || exit 1
+                    curl -f http://localhost:8090 || exit 1
                     docker stop test-container
                     docker rm test-container
                 """
