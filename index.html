@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Task Manager</title>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>Task Manager</h1>
+        <p>A simple app for Jenkins & Docker testing</p>
+      </header>
+      
+      <main>
+        <div class="add-task">
+          <input type="text" id="taskInput" placeholder="Enter a new task..." />
+          <button id="addBtn">Add Task</button>
+        </div>
+        
+        <div class="stats">
+          <span id="totalTasks">Total: 0</span>
+          <span id="completedTasks">Completed: 0</span>
+        </div>
+        
+        <ul id="taskList"></ul>
+        
+        <div class="actions">
+          <button id="clearCompleted">Clear Completed</button>
+          <button id="clearAll">Clear All</button>
+        </div>
+      </main>
+      
+      <footer>
+        <p>Built with Vite • Ready for Jenkins & Docker</p>
+      </footer>
+    </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
